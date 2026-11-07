@@ -34,7 +34,7 @@ wb = openpyxl.Workbook(); ws = wb.active
 ws.append(['用户名', '姓名', '密码', '角色', '查看权限'])
 ws.append(['wangwu', '王五', '123456', '提交人,查看人', '结构件,电子料'])
 ws.append(['zhaoliu', '赵六', '123456', '查看人', '全部'])
-ws.append(['wangwu', '重复', '123456', '查看人', 'IC'])
+ws.append(['wangwu', '重复', '123456', '查看人', 'CI'])
 buf = io.BytesIO(); wb.save(buf); buf.seek(0)
 r = requests.post(B + '/admin/users/import', files={'file': ('import.xlsx', buf, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}, headers=AH)
 print('import:', r.json())

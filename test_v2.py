@@ -18,14 +18,14 @@ print('local suggest:', r)
 r = requests.post(B + '/clues', json={
     'title': 'IC课题：某厂商发布新一代电源管理芯片', 'content': '网络调研发现，该芯片性能提升30%',
     'source': '厂商官网新闻', 'scene': '网络调研', 'acquired_at': '2026-11-07 09:00',
-    'depts': ['IC', '原价'], 'material': '电子料', 'category': '技术趋势', 'channel': '网络调研',
+    'depts': ['CI', '原价'], 'material': '电子料', 'category': '技术趋势', 'channel': '网络调研',
     'keywords': ['电源芯片', '新品'], 'credibility': '高',
 }, headers=H)
 cid = r.json()['id']
 print('create:', r.json()['depts'], r.json()['material'], r.json()['category'], r.json()['channel'])
 
 # 多维筛选
-for p in [{'dept': '原价'}, {'material': '电子料'}, {'channel': '网络调研'}, {'category': '技术趋势'}, {'dept': 'IC', 'material': '电子料'}]:
+for p in [{'dept': '原价'}, {'material': '电子料'}, {'channel': '网络调研'}, {'category': '技术趋势'}, {'dept': 'CI', 'material': '电子料'}]:
     n = requests.get(B + '/clues', params=p, headers=H).json()['total']
     print('filter', p, '->', n)
 

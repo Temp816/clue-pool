@@ -26,7 +26,7 @@
         <div class="feat"><i>⚡</i><div><b>30 秒极速录入</b><p>语音转文字、拍照识别、先记后补，跑现场也能随手提交</p></div></div>
         <div class="feat"><i>🔍</i><div><b>多维检索</b><p>最新/热门/阅读/点赞排序，条线·物料·主题·时间组合筛选</p></div></div>
         <div class="feat"><i>🤖</i><div><b>智能推荐 · 数据不出本机</b><p>默认本地引擎推荐分类标签，情报内容零外传</p></div></div>
-        <div class="feat"><i>🛡️</i><div><b>四类权限隔离</b><p>结构件/电子料/化工料/IC 分权可见，谁也看不到越权信息</p></div></div>
+        <div class="feat"><i>🛡️</i><div><b>四类权限隔离</b><p>结构件/电子料/化工料/CI 分权可见，谁也看不到越权信息</p></div></div>
         <div class="feat"><i>✅</i><div><b>范围审批流</b><p>审批员按负责范围把关，通过/驳回/意见全程留痕</p></div></div>
         <div class="feat"><i>📊</i><div><b>管理驾驶舱</b><p>趋势、分布、活跃榜一目了然，一键导出完整 Excel</p></div></div>
       </div>
@@ -68,7 +68,7 @@
         <div class="acct">
           <div class="acct-head"><b>演示用户</b><span class="role submit">提交人</span><span class="role view">查看人</span></div>
           <p><code>demo</code> / <code>demo123</code></p>
-          <p class="desc">权限：结构件/电子料/IC（无化工料权限，可现场对比权限隔离效果）</p>
+          <p class="desc">权限：结构件/电子料/CI（无化工料权限，可现场对比权限隔离效果）</p>
         </div>
         <div class="acct">
           <div class="acct-head"><b>审批员</b><span class="role approve">审批员</span></div>

@@ -40,15 +40,15 @@ CLUE_STATUS = ["待补充", "待核实", "已核实", "已归档"]
 ROLES = {"submitter": "提交人", "viewer": "查看人", "approver": "审批员", "admin": "管理员"}
 
 DEFAULT_TAXONOMY = {
-    "depts": ["原价", "IC"],
+    "depts": ["原价", "CI"],
     "materials": ["结构件", "电子料", "化工料", "其他"],
     "topics": {
         "原价": ["供应商信息", "产品信息", "市场行情", "研发方向", "竞争对手动态", "政策动向", "其他"],
-        "IC": ["行业动态", "竞争对手", "政策法规", "技术趋势", "客户信息", "厂商信息", "其他"],
+        "CI": ["行业动态", "竞争对手", "政策法规", "技术趋势", "客户信息", "厂商信息", "其他"],
     },
     "channels": {
         "原价": ["供应商出差", "展会出差", "日常交流", "其他"],
-        "IC": ["网络调研", "实地调研", "展会会议", "专家交流", "其他"],
+        "CI": ["网络调研", "实地调研", "展会会议", "专家交流", "其他"],
     },
 }
 
@@ -88,8 +88,8 @@ def init_db():
         password_hash TEXT NOT NULL,
         name TEXT NOT NULL,
         roles TEXT NOT NULL DEFAULT 'submitter,viewer',
-        perms TEXT NOT NULL DEFAULT '结构件,电子料,化工料,IC',
-        approve_scope TEXT DEFAULT '',   -- 审批员负责的范围：结构件/电子料/化工料/IC
+        perms TEXT NOT NULL DEFAULT '结构件,电子料,化工料,CI',
+        approve_scope TEXT DEFAULT '',   -- 审批员负责的范围：结构件/电子料/化工料/CI
         avatar TEXT DEFAULT '',
         created_at TEXT NOT NULL
     );
@@ -111,7 +111,7 @@ def init_db():
         source TEXT DEFAULT '',          -- 来源身份（自由文本）
         scene TEXT DEFAULT '',           -- 获取场景/地点
         acquired_at TEXT DEFAULT '',     -- 获取时间
-        dept TEXT DEFAULT '',            -- 条线，逗号分隔：原价,IC
+        dept TEXT DEFAULT '',            -- 条线，逗号分隔：原价,CI
         material TEXT DEFAULT '',        -- 物料类别（原价条线）
         category TEXT DEFAULT '',        -- 信息主题（单选）
         channel TEXT DEFAULT '',         -- 获取方式
@@ -156,17 +156,17 @@ def init_db():
         c.execute("INSERT INTO users(username,password_hash,name,roles,created_at) VALUES(?,?,?,?,?)",
                   ("admin", h("admin123"), "管理员", "submitter,viewer,admin", now))
         c.execute("INSERT INTO users(username,password_hash,name,roles,perms,created_at) VALUES(?,?,?,?,?,?)",
-                  ("demo", h("demo123"), "演示用户", "submitter,viewer", "结构件,电子料,IC", now))
+                  ("demo", h("demo123"), "演示用户", "submitter,viewer", "结构件,电子料,CI", now))
         c.execute("INSERT INTO users(username,password_hash,name,roles,perms,approve_scope,created_at) VALUES(?,?,?,?,?,?,?)",
-                  ("reviewer", h("review123"), "审批员", "viewer,approver", "结构件,电子料,化工料,IC", "结构件", now))
+                  ("reviewer", h("review123"), "审批员", "viewer,approver", "结构件,电子料,化工料,CI", "结构件", now))
         set_setting(conn, "taxonomy", json.dumps(DEFAULT_TAXONOMY, ensure_ascii=False))
         set_setting(conn, "ai_external_enabled", "0")
         samples = [
             ("竞品A计划下季度对电子料产品线降价10%-15%", "在行业交流会上从客户采购经理处获悉，竞品A正在制定明年Q1的价格调整方案，电容电阻等主力电子料预计降价10%-15%，意在抢占中端市场份额。", "某客户采购经理", "行业交流会现场", "2026-11-06 15:30", "原价", "电子料", "市场行情", "展会出差", "竞品A,降价,价格战", "中", "待核实", 1, 12, 3),
             ("供应商B注塑模具产能紧张", "赴供应商B工厂考察时发现其注塑产线排产已满至明年2月，交期可能延长。供应商确认正在扩产但进度不明。", "供应商B生产主管", "供应商工厂", "2026-11-05 14:00", "原价", "结构件", "供应商信息", "供应商出差", "供应商B,注塑,交期", "高", "已核实", 1, 21, 9),
-            ("某省拟出台化工原料安全管理新规", "与同行交流时听说，某省监管部门正在起草化工原料存储新规，可能影响涂料胶水类物料的仓储成本。未经官方证实，建议持续跟踪。", "同行企业信息主管", "午餐交流", "2026-11-05 12:20", "原价,IC", "化工料", "政策动向", "日常交流", "化工,新规,仓储", "中", "待核实", 2, 8, 5),
-            ("头部客户透露明年预算向数字化倾斜", "客户拜访时获悉，该客户明年IT预算同比增长约20%，重点投向数字化改造。决策人为信息部总监，预计12月启动招标。", "客户信息部员工", "客户拜访", "2026-11-04 10:00", "IC", "", "客户信息", "实地调研", "预算,数字化,招标", "高", "已核实", 1, 15, 6),
-            ("AI视觉检测在电子料质检环节成本下降明显", "行业公众号文章提到，AI视觉检测方案整体成本较去年下降约40%，多家厂商在PCB检测环节规模化落地。", "公开公众号文章", "日常信息监测", "2026-11-03 09:15", "IC", "电子料", "技术趋势", "网络调研", "AI,视觉检测,PCB", "高", "已归档", 2, 15, 2),
+            ("某省拟出台化工原料安全管理新规", "与同行交流时听说，某省监管部门正在起草化工原料存储新规，可能影响涂料胶水类物料的仓储成本。未经官方证实，建议持续跟踪。", "同行企业信息主管", "午餐交流", "2026-11-05 12:20", "原价,CI", "化工料", "政策动向", "日常交流", "化工,新规,仓储", "中", "待核实", 2, 8, 5),
+            ("头部客户透露明年预算向数字化倾斜", "客户拜访时获悉，该客户明年IT预算同比增长约20%，重点投向数字化改造。决策人为信息部总监，预计12月启动招标。", "客户信息部员工", "客户拜访", "2026-11-04 10:00", "CI", "", "客户信息", "实地调研", "预算,数字化,招标", "高", "已核实", 1, 15, 6),
+            ("AI视觉检测在电子料质检环节成本下降明显", "行业公众号文章提到，AI视觉检测方案整体成本较去年下降约40%，多家厂商在PCB检测环节规模化落地。", "公开公众号文章", "日常信息监测", "2026-11-03 09:15", "CI", "电子料", "技术趋势", "网络调研", "AI,视觉检测,PCB", "高", "已归档", 2, 15, 2),
             ("听说某厂商在接触我们的核心供应商", "", "", "", "", "原价", "结构件", "竞争对手动态", "供应商出差", "", "中", "待补充", 2, 3, 0),
         ]
         for s in samples:
@@ -174,14 +174,27 @@ def init_db():
                 credibility,status,submitter_id,images,views,likes,created_at,updated_at)
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (*s[:13], '[]', s[13], s[14], now, now))
+    # 历史数据迁移：条线 IC 更名为 CI（幂等，重复执行无副作用）
+    def _ci(v):
+        return ",".join("CI" if t == "IC" else t for t in (v or "").split(","))
+    for row in c.execute("SELECT id, dept FROM clues").fetchall():
+        nv = _ci(row[1])
+        if nv != row[1]: c.execute("UPDATE clues SET dept=? WHERE id=?", (nv, row[0]))
+    for row in c.execute("SELECT id, perms, approve_scope FROM users").fetchall():
+        np_, ns = _ci(row[1]), _ci(row[2])
+        if np_ != row[1] or ns != row[2]:
+            c.execute("UPDATE users SET perms=?, approve_scope=? WHERE id=?", (np_, ns, row[0]))
+    for row in c.execute("SELECT id, depts FROM tag_presets").fetchall():
+        nv = _ci(row[1])
+        if nv != row[1]: c.execute("UPDATE tag_presets SET depts=? WHERE id=?", (nv, row[0]))
     conn.commit(); conn.close()
 
 def hash_pw(p): return hashlib.sha256(("cluepool::" + p).encode()).hexdigest()
 def now(): return datetime.now().isoformat(timespec="seconds")
 
 # ---------------- 查看权限 ----------------
-# 四个受控范围：结构件/电子料/化工料(原价物料) + IC(条线)。其他标签全员可见。
-PERM_SCOPES = ["结构件", "电子料", "化工料", "IC"]
+# 四个受控范围：结构件/电子料/化工料(原价物料) + CI(条线)。其他标签全员可见。
+PERM_SCOPES = ["结构件", "电子料", "化工料", "CI"]
 
 def visible_filter(u):
     """返回 (sql片段, 参数)。规则：线索的受控范围（物料为三类之一 或 条线含IC）中，
@@ -194,20 +207,20 @@ def visible_filter(u):
     if mats_have:
         allowed.append("material IN (%s)" % ",".join("?" * len(mats_have)))
         args += mats_have
-    if "IC" in perms:
-        allowed.append("(','||dept||',') LIKE '%,IC,%'")
+    if "CI" in perms:
+        allowed.append("(','||dept||',') LIKE '%,CI,%'")
     allowed.append("submitter_id=?")
     args.append(u["id"])
-    restricted = "(material IN ('结构件','电子料','化工料') OR (','||dept||',') LIKE '%,IC,%')"
+    restricted = "(material IN ('结构件','电子料','化工料') OR (','||dept||',') LIKE '%,CI,%')"
     return f"(NOT {restricted} OR {' OR '.join(allowed)})", args
 
 def clue_scopes(clue_row):
-    """线索所属的受控范围集合：物料三类 + IC"""
+    """线索所属的受控范围集合：物料三类 + CI"""
     scopes = set()
     if clue_row["material"] in PERM_SCOPES[:3]:
         scopes.add(clue_row["material"])
-    if "IC" in (clue_row["dept"] or "").split(","):
-        scopes.add("IC")
+    if "CI" in (clue_row["dept"] or "").split(","):
+        scopes.add("CI")
     return scopes
 
 def can_approve(u, clue_row):
@@ -602,15 +615,15 @@ LOCAL_RULES = [
     (["竞品", "对手", "友商", "竞争"], "", "竞争对手动态", "", []),
     (["新规", "政策", "法规", "监管", "合规", "办法"], "", "政策动向", "", ["政策"]),
     (["研发", "新技术", "专利", "路线图"], "", "研发方向", "", []),
-    (["客户", "招标", "预算", "订单", "需求"], "IC", "客户信息", "", ["客户"]),
-    (["AI", "算法", "视觉检测", "自动化", "数字化"], "IC", "技术趋势", "", []),
+    (["客户", "招标", "预算", "订单", "需求"], "CI", "客户信息", "", ["客户"]),
+    (["AI", "算法", "视觉检测", "自动化", "数字化"], "CI", "技术趋势", "", []),
     (["展会", "论坛", "峰会"], "", "", "", ["展会"]),
-    (["专家", "访谈"], "IC", "", "", []),
+    (["专家", "访谈"], "CI", "", "", []),
     (["钣金", "注塑", "模具", "压铸", "五金", "结构件", "外壳"], "", "", "结构件", ["结构件"]),
     (["芯片", "PCB", "电容", "电阻", "元器件", "电子料", "IC"], "", "", "电子料", ["电子料"]),
     (["涂料", "胶水", "塑料", "化工", "油墨"], "", "", "化工料", ["化工料"]),
 ]
-# IC 条线下的主题映射修正
+# CI 条线下的主题映射修正
 IC_TOPIC_MAP = {"竞争对手动态": "竞争对手", "政策动向": "政策法规", "研发方向": "技术趋势", "市场行情": "行业动态"}
 
 def local_suggest(title, content, taxonomy):
@@ -623,8 +636,8 @@ def local_suggest(title, content, taxonomy):
             if tp and not topic: topic = tp
             if mt and not material: material = mt
             tags += hit + tg
-    if dept == "IC" and topic in IC_TOPIC_MAP: topic = IC_TOPIC_MAP[topic]
-    if not dept: dept = "IC" if topic in taxonomy["topics"].get("IC", []) else "原价"
+    if dept == "CI" and topic in IC_TOPIC_MAP: topic = IC_TOPIC_MAP[topic]
+    if not dept: dept = "CI" if topic in taxonomy["topics"].get("CI", []) else "原价"
     if not topic: topic = "其他"
     # 主题必须在所选条线的可选范围内，否则落到该条线的"其他"
     valid = taxonomy["topics"].get(dept, [])
@@ -660,7 +673,7 @@ def ai_suggest(body: dict, u=Depends(current_user)):
             all_topics = {d: tax["topics"].get(d, []) for d in tax["depts"]}
             out = ai_chat([{"role": "system", "content":
                 f"""你是企业情报线索分类助手。根据线索标题和内容进行分类。
-条线（可多选）：{'、'.join(tax['depts'])}。原价=成本/物料相关；IC=课题调研相关。
+条线（可多选）：{'、'.join(tax['depts'])}。原价=成本/物料相关；CI=课题调研相关。
 各条线的信息主题（单选，选最相关一个）：{json.dumps(all_topics, ensure_ascii=False)}
 物料类别（仅原价条线，可选）：{'、'.join(tax['materials'])}
 另提取3-5个关键词标签。
@@ -757,13 +770,13 @@ def admin_user_template(u=Depends(require_admin)):
     import openpyxl
     wb = openpyxl.Workbook(); ws = wb.active; ws.title = "账号导入模板"
     ws.append(["用户名", "姓名", "密码", "角色", "查看权限", "审批范围"])
-    ws.append(["zhangsan", "张三", "123456", "提交人,查看人", "结构件,电子料,化工料,IC", ""])
-    ws.append(["lisi", "李四", "123456", "查看人", "IC", ""])
-    ws.append(["shenpi1", "王审批", "123456", "查看人,审批员", "结构件,电子料,化工料,IC", "结构件"])
+    ws.append(["zhangsan", "张三", "123456", "提交人,查看人", "结构件,电子料,化工料,CI", ""])
+    ws.append(["lisi", "李四", "123456", "查看人", "CI", ""])
+    ws.append(["shenpi1", "王审批", "123456", "查看人,审批员", "结构件,电子料,化工料,CI", "结构件"])
     ws.append([])
     ws.append(["说明：角色可选 提交人/查看人/审批员/管理员，多个用英文逗号分隔；"])
-    ws.append(["查看权限可选 结构件/电子料/化工料/IC，多个用英文逗号分隔，填“全部”表示四类全部授权；"])
-    ws.append(["审批范围仅审批员需要填写：结构件/电子料/化工料/IC 中的一项；"])
+    ws.append(["查看权限可选 结构件/电子料/化工料/CI，多个用英文逗号分隔，填“全部”表示四类全部授权；"])
+    ws.append(["审批范围仅审批员需要填写：结构件/电子料/化工料/CI 中的一项；"])
     ws.append(["标为“其他”的线索所有人可见，无需授权。"])
     from openpyxl.utils import get_column_letter
     for i in range(1, 7): ws.column_dimensions[get_column_letter(i)].width = 22
