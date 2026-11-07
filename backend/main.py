@@ -187,6 +187,10 @@ def init_db():
     for row in c.execute("SELECT id, depts FROM tag_presets").fetchall():
         nv = _ci(row[1])
         if nv != row[1]: c.execute("UPDATE tag_presets SET depts=? WHERE id=?", (nv, row[0]))
+    # 迁移 settings 中存储的分类体系（JSON 内的 IC 同样更名）
+    row = c.execute("SELECT value FROM settings WHERE key='taxonomy'").fetchone()
+    if row and '"IC"' in row[0]:
+        c.execute("UPDATE settings SET value=? WHERE key='taxonomy'", (row[0].replace('"IC"', '"CI"'),))
     conn.commit(); conn.close()
 
 def hash_pw(p): return hashlib.sha256(("cluepool::" + p).encode()).hexdigest()
