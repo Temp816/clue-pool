@@ -1,0 +1,24 @@
+{
+  "name": "clue-pool-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vant/icons": "^3.0.2",
+    "axios": "^1.21.0",
+    "pinia": "^4.1.0",
+    "qrcode": "^1.5.4",
+    "vant": "^4.10.2",
+    "vue": "^3.5.44",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.10",
+    "vite": "^8.3.6"
+  }
+}

@@ -1,0 +1,6 @@
+ai_config.json
+cluepool.db
+uploads/
+__pycache__/
+node_modules/
+# backend/dist 需要随仓库提交（Render 直接托管，不在云端构建前端）
