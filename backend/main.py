@@ -907,12 +907,33 @@ def admin_export(u=Depends(require_admin)):
     return StreamingResponse(buf, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                              headers={"Content-Disposition": "attachment; filename=clue-pool-export.xlsx"})
 
-# 生产模式：托管前端构建产物
+# ---------------- 健康检查 & 云端保活 ----------------
+@app.get("/api/health")
+def health():
+    return {"ok": True, "time": now()}
+
+def start_keepalive():
+    """云端部署时防休眠：每10分钟自访问一次（Render 自动注入 RENDER_EXTERNAL_URL）。本地运行不启用。"""
+    url = os.environ.get("SELF_PING_URL") or os.environ.get("RENDER_EXTERNAL_URL")
+    if not url:
+        return
+    import threading
+    def loop():
+        while True:
+            time.sleep(600)
+            try:
+                urllib.request.urlopen(url.rstrip("/") + "/api/health", timeout=15)
+            except Exception:
+                pass
+    threading.Thread(target=loop, daemon=True).start()
+
+# 生产模式：托管前端构建产物（必须放在所有 API 路由之后，避免拦截 /api/*）
 dist = os.path.join(BASE_DIR, "dist")
 if os.path.isdir(dist):
     app.mount("/", StaticFiles(directory=dist, html=True), name="static")
 
 init_db()
+start_keepalive()
 
 if __name__ == "__main__":
     import uvicorn
